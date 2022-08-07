@@ -9,6 +9,10 @@ from matplotlib.colors import Normalize
 plt.style.use('dark_background')
 
 st.title('Streamflow Polar Plot Visualization')
+form = st.form(key='my-form')
+site = form.text_input('Enter USGS Gage ID', value='15304000')
+submit = form.form_submit_button('Submit')
+
 
 
 def get_data(site):
@@ -39,7 +43,7 @@ def process(df):
     c = norm(df2['flow'])
     return df2,c,norm
 
-def plot_polar(df2):
+def plot_polar(df2,c,norm):
     fig = plt.figure(figsize=(10, 10), dpi=80)
     ax = fig.add_subplot(projection='polar')
     # We prefer 1 January (0 deg) on the left, but the default is to the
@@ -64,8 +68,11 @@ def plot_polar(df2):
     st.pyplot(fig)
     #plt.show()
 
-site = '15304000'
-df = get_data(site)
-
-df2,c,norm = process(df)
-plot_polar(df2)
+#site = '15304000'
+def generate(site):
+    df = get_data(site)
+    df2,c,norm = process(df)
+    plot_polar(df2,c,norm)
+    
+if submit:
+    generate(site)
