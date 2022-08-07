@@ -1,3 +1,17 @@
+#-------------------------------------------------------------------------------
+# Name          Polar Plot Streamflow Visualization
+# Description:  App to display daily streamflow values in polar coordinates by date
+# Author:       Chandler Engel
+#               US Army Corps of Engineers
+#               Cold Regions Research and Engineering Laboratory (CRREL)
+#               Chandler.S.Engel@usace.army.mil
+# Created:      07 August 2022
+# Updated:      -
+#
+# Plotting code adapted from temperature plotting example by Christian Hill 
+###https://scipython.com/blog/visualizing-the-temperature-in-cambridge-uk/              
+#-------------------------------------------------------------------------------
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -23,7 +37,7 @@ def get_data(site):
     return df
 
 def process(df):
-    # Select the maximum temperature on each day of the year.
+    # Select the maximum value on each day of the year.
     df2 = df.groupby(pd.Grouper(level='date', freq='D')).max()
 
     # Convert the timestamp to the number of seconds since the start of the year.
@@ -46,14 +60,15 @@ def process(df):
 def plot_polar(df2,c,norm):
     fig = plt.figure(figsize=(10, 10), dpi=80)
     ax = fig.add_subplot(projection='polar')
-    # We prefer 1 January (0 deg) on the left, but the default is to the
-    # right, so offset by 180 deg.
+    # We prefer 1 January (0 deg) on the top, but the default is to the
+    # right, so offset by 90 deg.
     ax.set_theta_offset(np.pi/2)
     cmap = cm.turbo
     ax.scatter(df2['angle'], df2['flow']+3*np.std(df2.flow), c=cmap(c), s=2)
 
     # Tick labels.
     ax.set_xticks(np.arange(0, 2 * np.pi, np.pi / 6))
+    #clunky/lazy mod to put labels in revese order so the plot goes clockwise
     ax.set_xticklabels(['Jan']+list(reversed(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']))[:-1])
     #ax.set_xticklabels(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
