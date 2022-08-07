@@ -26,6 +26,7 @@ st.title('Streamflow Polar Plot Visualization')
 form = st.form(key='my-form')
 site = form.text_input('Enter USGS Gage ID', value='07289000')
 submit = form.form_submit_button('Submit')
+st.write('Ex. Yukon 15356000, Mississippi 07289000, American 11446500, Winooski 04290500') 
 
 
 
@@ -94,4 +95,7 @@ def generate(site):
     plot_polar(df2,c,norm)
     
 if submit:
-    generate(site)
+    try:
+        generate(site)
+    except:
+        st.write("**That ID didn't work, please check the number or try a different one**")
